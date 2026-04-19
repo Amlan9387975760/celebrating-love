@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Happy & Amlan — 1st Anniversary</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at top, #2a0845 0%, #120220 60%, #0a0115 100%);
+    overflow: hidden;
+    font-family: 'Lato', sans-serif;
+    user-select: none;
+  }
+
+  /* ── Starfield ── */
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.1; transform: scale(1); }
+    50%      { opacity: 0.9; transform: scale(1.4); }
+  }
+
+  /* ── Floating petals ── */
+  .petal {
+    position: fixed;
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 1;
+    animation: petalFall linear infinite;
+    opacity: 0;
+  }
+  @keyframes petalFall {
+    0%   { transform: translateY(-60px) rotate(0deg)   translateX(0);   opacity: 0; }
+    10%  { opacity: 0.85; }
+    90%  { opacity: 0.85; }
+    100% { transform: translateY(110vh)  rotate(360deg) translateX(40px); opacity: 0; }
+  }
+
+  /* ── Card scene ── */
+  .scene {
+    perspective: 1800px;
+    z-index: 10;
+    width: min(340px, 92vw);
+    height: min(560px, 88vh);
+  }
+  .card {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1.1s cubic-bezier(0.23, 1.2, 0.32, 1);
+    cursor: pointer;
+  }
+  .card.open { transform: rotateY(180deg); }
+
+  .face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* ── FRONT ── */
+  .front {
+    background: linear-gradient(155deg, #1b0438 0%, #4a1070 45%, #1b0438 100%);
+    border: 1.5px solid rgba(212,175,55,.5);
+    box-shadow: 0 0 60px rgba(150,50,200,.35), 0 25px 80px rgba(0,0,0,.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 36px 28px;
+  }
+
+  /* corner ornaments */
+  .corner {
+    position: absolute;
+    width: 42px; height: 42px;
+    border-color: rgba(212,175,55,.55);
+    border-style: solid;
+    border-width: 0;
+  }
+  .corner.tl { top: 18px; left: 18px;  border-top-width: 2px; border-left-width: 2px;  border-radius: 6px 0 0 0; }
+  .corner.tr { top: 18px; right: 18px; border-top-width: 2px; border-right-width: 2px; border-radius: 0 6px 0 0; }
+  .corner.bl { bottom: 18px; left: 18px;  border-bottom-width: 2px; border-left-width: 2px;  border-radius: 0 0 0 6px; }
+  .corner.br { bottom: 18px; right: 18px; border-bottom-width: 2px; border-right-width: 2px; border-radius: 0 0 6px 0; }
+
+  .front-ring {
+    font-size: 64px;
+    margin-bottom: 14px;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 18px rgba(212,175,55,.7));
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1) rotate(-5deg); }
+    50%      { transform: scale(1.12) rotate(5deg); }
+  }
+
+  .front-names {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(28px, 8vw, 36px);
+    color: #D4AF37;
+    text-align: center;
+    line-height: 1.15;
+    text-shadow: 0 0 30px rgba(212,175,55,.5);
+    margin-bottom: 6px;
+  }
+  .front-year {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,.65);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  /* toggle switch */
+  .switch-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .switch-hint {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(212,175,55,.7);
+  }
+  .toggle {
+    width: 72px; height: 38px;
+    background: rgba(255,255,255,.08);
+    border: 2px solid rgba(212,175,55,.5);
+    border-radius: 19px;
+    position: relative;
+    transition: background .4s, border-color .4s;
+  }
+  .toggle.on {
+    background: rgba(212,175,55,.2);
+    border-color: #D4AF37;
+    box-shadow: 0 0 14px rgba(212,175,55,.4);
+  }
+  .knob {
+    position: absolute;
+    top: 5px; left: 5px;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #D4AF37, #a8720a);
+    border-radius: 50%;
+    transition: transform .4s cubic-bezier(0.23,1.2,0.32,1);
+    box-shadow: 0 2px 10px rgba(0,0,0,.4);
+  }
+  .toggle.on .knob { transform: translateX(34px); }
+
+  /* ── BACK ── */
+  .back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #fff8f2 0%, #ffe8ef 50%, #fff4f8 100%);
+    box-shadow: 0 0 60px rgba(150,50,200,.3), 0 25px 80px rgba(0,0,0,.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 28px 24px 22px;
+    gap: 0;
+  }
+
+  /* back top flourish */
+  .back-flourish {
+    font-size: 28px;
+    letter-spacing: 6px;
+    color: #D4AF37;
+    margin-bottom: 8px;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%,100% { opacity: .7; } 50% { opacity: 1; }
+  }
+
+  .badge {
+    background: linear-gradient(135deg, #D4AF37, #a8720a);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+
+  .back-names {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(30px, 9vw, 40px);
+    color: #6b0d2e;
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .back-amp {
+    font-size: 0.75em;
+    color: #b76e79;
+  }
+
+  .invite-line {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 1px;
+    text-align: center;
+    margin: 10px 0 4px;
+  }
+  .invite-bold {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b0d2e;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .divider {
+    width: 78%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+    margin: 8px auto;
+    flex-shrink: 0;
+  }
+
+  .details-grid {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 2px 0;
+  }
+  .detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .detail-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .detail-text {}
+  .d-label {
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b76e79;
+    margin-bottom: 2px;
+  }
+  .d-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: #2d0b45;
+    font-weight: 700;
+  }
+  .d-sub {
+    font-size: 10px;
+    color: #777;
+    margin-top: 1px;
+    line-height: 1.4;
+  }
+
+  .hearts-row {
+    font-size: 20px;
+    letter-spacing: 8px;
+    text-align: center;
+    margin: 6px 0;
+    animation: heartbeat 1.8s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); } 50% { transform: scale(1.08); }
+  }
+
+  .tagline {
+    font-family: 'Dancing Script', cursive;
+    font-size: 13px;
+    color: #b76e79;
+    text-align: center;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* ── Confetti ── */
+  .confetti {
+    position: fixed;
+    width: 9px; height: 9px;
+    top: -20px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    animation: cfall 3.2s ease-in forwards;
+  }
+  @keyframes cfall {
+    0%   { transform: translateY(0) rotate(0deg) scaleX(1);  opacity: 1; }
+    40%  { transform: translateY(40vh) rotate(300deg) scaleX(-1); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg) scaleX(1); opacity: 0; }
+  }
+
+  /* ── Tap hint below card ── */
+  .tap-hint {
+    z-index: 10;
+    margin-top: 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(212,175,55,.55);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:.4} 50%{opacity:1} }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Floating petals -->
+<div id="petals"></div>
+
+<!-- Card -->
+<div class="scene">
+  <div class="card" id="card">
+
+    <!-- FRONT -->
+    <div class="face front" id="front" onclick="toggleCard()">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <div class="front-ring">💍</div>
+      <div class="front-names">Happy<br>&amp; Amlan</div>
+      <div class="front-year">First Anniversary</div>
+
+      <div class="switch-wrap">
+        <div class="switch-hint">Open Invitation</div>
+        <div class="toggle" id="toggle">
+          <div class="knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACK -->
+    <div class="face back" onclick="toggleCard()">
+      <div class="back-flourish">✦ ✦ ✦</div>
+      <div class="badge">✨ 1 Year of Love ✨</div>
+
+      <div class="back-names">
+        Happy<br>
+        <span class="back-amp">&amp; </span>Amlan
+      </div>
+
+      <div class="invite-line">cordially invite you to celebrate</div>
+      <div class="invite-bold">Their First Anniversary</div>
+
+      <div class="divider"></div>
+
+      <div class="details-grid">
+        <div class="detail-row">
+          <div class="detail-icon">📅</div>
+          <div class="detail-text">
+            <div class="d-label">Date</div>
+            <div class="d-value">20th April, 2026</div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-icon">⏰</div>
+          <div class="detail-text">
+            <div class="d-label">Time</div>
+            <div class="d-value">6:30 PM onwards</div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-icon">📍</div>
+          <div class="detail-text">
+            <div class="d-label">Venue</div>
+            <div class="d-value">The Levitate</div>
+            <div class="d-sub">8th Floor, Nikita Pinnacle<br>Opp. Vivanta by Taj, Guwahati – 781022</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="hearts-row">🌹 💕 🌹</div>
+
+      <div class="tagline">
+        "One year of love, laughter<br>&amp; forever begins here"
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="tap-hint" id="tapHint">Tap card to open ↑</div>
+
+<script>
+  /* ── Stars ── */
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*5}s;`;
+    starsEl.appendChild(s);
+  }
+
+  /* ── Petals ── */
+  const petalsEl = document.getElementById('petals');
+  const petalChars = ['🌸','🌹','✿','❀','💮','🌺'];
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = petalChars[Math.floor(Math.random() * petalChars.length)];
+    p.style.cssText = `left:${Math.random()*100}%;animation-duration:${Math.random()*9+8}s;animation-delay:${Math.random()*10}s;font-size:${Math.random()*12+12}px;`;
+    petalsEl.appendChild(p);
+  }
+
+  /* ── Card flip ── */
+  let isOpen = false;
+
+  function toggleCard() {
+    const card    = document.getElementById('card');
+    const toggle  = document.getElementById('toggle');
+    const hint    = document.getElementById('tapHint');
+
+    isOpen = !isOpen;
+
+    if (isOpen) {
+      toggle.classList.add('on');
+      setTimeout(() => card.classList.add('open'), 280);
+      hint.textContent = 'Tap to close ↑';
+      setTimeout(launchConfetti, 900);
+    } else {
+      toggle.classList.remove('on');
+      card.classList.remove('open');
+      hint.textContent = 'Tap card to open ↑';
+    }
+  }
+
+  /* ── Confetti ── */
+  function launchConfetti() {
+    const colors = ['#D4AF37','#B76E79','#FF6B9D','#FFD700','#C0392B','#9B59B6','#F39C12','#E74C3C'];
+    const shapes = [true, false]; // circle / square
+    for (let i = 0; i < 90; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left  = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)] ? '50%' : '2px';
+        const sz = Math.random() * 9 + 5;
+        c.style.width  = sz + 'px';
+        c.style.height = sz + 'px';
+        c.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        c.style.animationDelay    = (Math.random() * 0.6)     + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 20);
+    }
+  }
+</script>
+</body>
+</html>

@@ -301,6 +301,31 @@
     line-height: 1.4;
   }
 
+  /* ── Maps button ── */
+  .maps-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #D4AF37, #a8720a);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(212,175,55,.4);
+    transition: transform .2s, box-shadow .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .maps-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(212,175,55,.3);
+  }
+  .maps-btn span { font-size: 13px; }
+
   /* ── Confetti ── */
   .confetti {
     position: fixed;
@@ -399,6 +424,12 @@
             <div class="d-label">Venue</div>
             <div class="d-value">The Levitate</div>
             <div class="d-sub">8th Floor, Nikita Pinnacle<br>Opp. Vivanta by Taj, Guwahati – 781022</div>
+            <a class="maps-btn"
+               href="https://www.google.com/maps/search/?api=1&query=The+Levitate+Nikita+Pinnacle+Guwahati"
+               target="_blank"
+               onclick="event.stopPropagation()">
+              <span>🗺️</span> Get Directions
+            </a>
           </div>
         </div>
       </div>
